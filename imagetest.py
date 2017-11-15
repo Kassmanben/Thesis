@@ -59,28 +59,61 @@ def pixel_expand():
             temp_list.append(coordinates[l])
         else:
             #print(temp_list)
-            shortest_length = (np.inf, np.inf)
-            if len(temp_list)>20:
-                for ci in range(len(temp_list)-1):
-                    length_tuple = np.subtract(temp_list[ci][1],temp_list[ci][0])
-                    if length_tuple[0] != 0 and length_tuple[0]<shortest_length[0]:
-                        shortest_length = (length_tuple[0], 0)
-                    elif length_tuple[1] != 0 and length_tuple[1]<shortest_length[1]:
-                        shortest_length = (0 , length_tuple[1])
+            max_start = -1
+            min_end = np.inf
+            if len(temp_list)>25:
                 for c in temp_list:
-                    cv2.line(img, c[0], tuple(np.add(c[0], shortest_length)), 0, 1)
-            temp_list = []
-    if len(temp_list) > 20:
-        for ci in range(len(temp_list) - 1):
-            length_tuple = np.subtract(temp_list[ci][1], temp_list[ci][0])
-            if length_tuple[0] != 0 and length_tuple[0] < shortest_length[0]:
-                shortest_length = (length_tuple[0], 0)
-            elif length_tuple[1] != 0 and length_tuple[1] < shortest_length[1]:
-                shortest_length = (0, length_tuple[1])
-        for c in temp_list:
-            cv2.line(img, c[0], tuple(np.add(c[0], shortest_length)), 0, 1)
+                    diff = np.subtract(c[1], c[0])
+                    if diff[0] != 0:
+                        if c[0][0] > max_start:
+                            max_start = c[0][0]
+                        if c[1][0] < min_end:
+                            min_end = c[1][0]
+                    elif diff[1] != 0:
+                        if c[0][1] > max_start:
+                            max_start = c[0][1]
+                        if c[1][1] < min_end:
+                            min_end = c[1][1]
 
-    cv2.imwrite('new_page2' + str(pg_num) + '.bmp', img)
+                for c in temp_list:
+                    diff = np.subtract(c[1], c[0])
+                    if diff[0] != 0:
+                        start = (max(max_start,c[0][0]),c[0][1])
+                        end = (min(min_end,c[1][0]),c[1][1])
+                    elif diff[1] != 0:
+                        start = (c[0][0], max(max_start, c[0][1]))
+                        end = (c[1][0],min(min_end, c[1][1]))
+                    cv2.line(img, start, end, 0, 1)
+            temp_list = []
+        max_start = -1
+        min_end = np.inf
+        if len(temp_list) > 25:
+            for c in temp_list:
+                diff = np.subtract(c[1], c[0])
+                if diff[0] != 0:
+                    if c[0][0] > max_start:
+                        max_start = c[0][0]
+                    if c[1][0] < min_end:
+                        min_end = c[1][0]
+                elif diff[1] != 0:
+                    if c[0][1] > max_start:
+                        max_start = c[0][1]
+                    if c[1][1] < min_end:
+                        min_end = c[1][1]
+
+            for c in temp_list:
+                diff = np.subtract(c[1], c[0])
+                start = (c[0][0],c[0][1])
+                end = (c[1][0],c[1][1])
+                if diff[0] != 0:
+                    start = (max(max_start, c[0][0]), c[0][1])
+                    end = (min(min_end, c[1][0]), c[1][1])
+                elif diff[1] != 0:
+                    start = (c[0][0], max(max_start, c[0][1]))
+                    end = (c[1][0], min(min_end, c[1][1]))
+                cv2.line(img, start, end, 0, 1)
+
+    cv2.imwrite('new_page' + str(pg_num) + '.bmp', img)
 
 
 
@@ -100,9 +133,10 @@ def mark_whitespace(range_limit, img_matrix, orientation):
             else:
                 cv2.line(img, (x, 0), (x, coordinate), 0, 1)
     cv2.imwrite('new_page2' + str(pg_num) + '.jpg', img)
-for x in range(1,6):
+
+for x in range(1,3):
     pg_num = x
-    img = cv2.imread('S_A2-' + str(pg_num) + '.png', 0)
+    img = cv2.imread('S_A-' + str(pg_num) + '.png', 0)
     #img = cv2.imread('building.jpg', 0)
     imageWidth = img.shape[1]  # Get image width
     imageHeight = img.shape[0]
