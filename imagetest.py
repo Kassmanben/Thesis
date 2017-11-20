@@ -113,7 +113,7 @@ def pixel_expand():
                     end = (c[1][0], min(min_end, c[1][1]))
                 cv2.line(img, start, end, 0, 1)
 
-    cv2.imwrite('new_page' + str(pg_num) + '.bmp', img)
+    cv2.imwrite('TestImages/Alg-' + str(pg_num) + '.bmp', img)
 
 
 
@@ -134,9 +134,12 @@ def mark_whitespace(range_limit, img_matrix, orientation):
                 cv2.line(img, (x, 0), (x, coordinate), 0, 1)
     cv2.imwrite('new_page2' + str(pg_num) + '.jpg', img)
 
-for x in range(1,3):
+for x in range(1,15):
     pg_num = x
-    img = cv2.imread('S_A-' + str(pg_num) + '.png', 0)
+    if pg_num<10:
+        img = cv2.imread('/Users/Ben/Desktop/Algorithms/Algorithms-0'+str(pg_num)+'.png', 0)
+    else:
+        img = cv2.imread('/Users/Ben/Desktop/Algorithms/Algorithms-'+str(pg_num)+'.png', 0)
     #img = cv2.imread('building.jpg', 0)
     imageWidth = img.shape[1]  # Get image width
     imageHeight = img.shape[0]
