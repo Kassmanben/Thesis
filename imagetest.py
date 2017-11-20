@@ -116,24 +116,6 @@ def pixel_expand():
     cv2.imwrite('TestImages/Alg-' + str(pg_num) + '.bmp', img)
 
 
-
-def mark_whitespace(range_limit, img_matrix, orientation):
-    coordinate = img_matrix.shape[1]  # Get image width/height depending on the matrix
-    white = True
-    for x in range(0, range_limit):
-        if white and not np.array_equal(img_matrix[x], img_matrix[x - 1]):
-            if orientation == "x":
-                cv2.line(img, (0, x), (coordinate, x), 0, 1)
-            else:
-                cv2.line(img, (x, 0), (x, coordinate), 0, 1)
-            white = False
-        if not white and np.array_equal(img_matrix[x], img_matrix[x - 1]):
-            if orientation == "x":
-                cv2.line(img, (0, x), (coordinate, x), 0, 1)
-            else:
-                cv2.line(img, (x, 0), (x, coordinate), 0, 1)
-    cv2.imwrite('new_page2' + str(pg_num) + '.jpg', img)
-
 for x in range(1,15):
     pg_num = x
     if pg_num<10:
